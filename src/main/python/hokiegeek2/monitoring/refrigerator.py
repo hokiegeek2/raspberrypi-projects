@@ -21,15 +21,19 @@ class RefrigeratorAccessMonitor:
     def startMonitor(self):
         logging.info("Started Monitoring Refrigerator at %s" % datetime.now().strftime("%Y%m%d %H:%M:%S"))
 
-        input = self._getInput()
+        doorSensor = self._getInput()
         while True:
-            if input.input(self.doorPin):
+            '''
+            If doorSensor.input(self.doorPin) returns true, this means the door is open 
+            '''
+            if doorSensor.input(self.doorPin):
                 self.doorOpened += 1
                 logging.info("Refrigerator opened at %s" % datetime.now().strftime("%Y%m%d %H:%M:%S"))
-                while input.input(self.doorPin):
+                while doorSensor.input(self.doorPin):
                    time.sleep(1)
+                self.door = 0
 
-            if input.input(self.doorPin) == False:
+            if doorSensor.input(self.doorPin) == False:
                 if (self.door == 0):
                     logging.info("Refrigerator closed at %s" % datetime.now().strftime("%Y%m%d %H:%M:%S"))
                     self.door += 1
